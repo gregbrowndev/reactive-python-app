@@ -1,0 +1,44 @@
+!dead_messages_config.yaml
+!secrets/**
+# But never ignore stuff we keep in secrets
+# Dev docs output
+# Local _config.yaml files used by Flask apps.
+# envrc
+# pyenv
+# pytest coverage reports
+**/htmlcov
+*.build
+*.code-workspace
+*.egg-info
+*.pyc
+*_config.yaml
+.DS_Store
+.Python
+.coverage
+.coverage.*
+.eggs
+.env
+.envrc
+.hypothesis
+.idea
+.mypy_cache
+.pytest_cache
+.python-version
+.tool-versions
+.unleash_cache/
+.venv
+.vscode
+/docs/bin/plantuml
+/docs/out
+__pycache__
+airflow-webserver.pid
+airflow.cfg
+coverage.xml
+logs
+pip-selfcheck.json
+pip-wheel-metadata
+pyrightconfig.json
+test-results
+test_config_*.json
+unittests.cfg
+venv

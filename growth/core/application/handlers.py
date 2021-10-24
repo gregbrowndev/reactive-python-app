@@ -13,9 +13,9 @@ from growth.core.application.usecases import (
 
 C = typing.TypeVar("C", bound=Command)
 E = typing.TypeVar("E", bound=Event)
+
 CommandHandlerMap = typing.Dict[typing.Type[C], CommandHandler[C]]
 EventHandlerMap = typing.Dict[typing.Type[E], EventHandler[E]]
-
 
 EVENT_HANDLERS: EventHandlerMap = {}
 

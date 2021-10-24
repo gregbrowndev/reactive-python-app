@@ -30,7 +30,7 @@ def handle_market_variable_rate_changed(
     session: Session, inbox: IInbox, event: events.MarketVariableRateChanged
 ):
     # Fetch IDs of tariffs in market. Note, this should be its own command
-    tariff_ids = [types.TariffId(uuid.uuid4())]
+    tariff_ids = [types.TariffId(uuid.UUID("2b1bd95b-3412-4349-8402-70a902dd8d21"))]
 
     for tariff_id in tariff_ids:
         command = commands.ChangeTariffMarketVariableRate(

@@ -1,7 +1,8 @@
+from growth.core.application.ports import IMessageBus
 from growth.core.domain import commands, events, types
 
 
-def test_happy_path(bus):
+def test_happy_path(bus: IMessageBus):
     """Scenario 1: Incumbent rates are calculated"""
     # GIVEN
     # some preconditions...
@@ -15,8 +16,7 @@ def test_happy_path(bus):
             market_type=types.MarketType.RESIDENTIAL,
         )
     )
-    resp = bus.issue(command)
+    resp = bus.invoke(command)
 
     # Then
-    assert isinstance(resp, events.IncumbentRatesCalculated)
-    assert resp == events.IncumbentRatesCalculated(market=command.market)
+    assert resp == [events.IncumbentRatesCalculated(market=command.market)]

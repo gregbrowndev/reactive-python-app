@@ -12,11 +12,6 @@ Message = typing.Union[
 ]
 
 
-class IMessageBus(typing.Protocol):
-    def issue(self, command: Command):
-        ...
-
-
 class IInbox(typing.Protocol):
     def invoke(self, command: Command):
         ...
@@ -25,6 +20,10 @@ class IInbox(typing.Protocol):
 class IOutbox(typing.Protocol):
     def publish(self, event: Event):
         ...
+
+
+class IMessageBus(IInbox, IOutbox):
+    ...
 
 
 class IUnitOfWork(Protocol):

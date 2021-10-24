@@ -1,6 +1,5 @@
 import logging
 import typing
-from dataclasses import dataclass
 
 from pydantic import validate_arguments
 from sqlalchemy.orm import Session
@@ -27,18 +26,43 @@ EventHandlerMap = typing.Dict[typing.Type[E], typing.List[EventHandler[E]]]
 logger = logging.getLogger(__name__)
 
 
-@dataclass
 class MessageBus(IMessageBus, IInbox, IOutbox):
     uow: IUnitOfWork
     event_handlers: EventHandlerMap
     command_handlers: CommandHandlerMap
 
-    @validate_arguments
-    def issue(self, command: ports.Command) -> typing.Optional[ports.Event]:
-        with self.uow:
-            self.queue: typing.List[ports.Message] = [command]
-            self.responses: typing.List[ports.Event] = []
+    def __init__(
+        self,
+        uow: IUnitOfWork,
+        event_handlers: EventHandlerMap,
+        command_handlers: CommandHandlerMap,
+    ):
+        self.uow = uow
+        self.command_handlers = command_handlers
+        self.event_handlers = event_handlers
 
+    @validate_arguments
+    def invoke(self, command: Command) -> typing.Optional[typing.List[ports.Event]]:
+        # TODO - need to have separate interfaces for shell/core
+        # Injected into each policy to publish commands onto the message
+        # bus without starting a new unit of work
+        if not self.uow.is_active():
+            return self._start(command)
+        self.queue.append(command)
+        return None
+
+    @validate_arguments
+    def publish(self, event: Event):
+        # Injected into each use case to publish events onto the message
+        # bus without starting a new unit of work
+        if not self.uow.is_active():
+            return self._start(event)
+        self.queue.append(event)
+
+    def _start(self, message: ports.Message):
+        with self.uow:
+            self.queue: typing.List[ports.Message] = [message]
+            self.responses: typing.List[ports.Event] = []
             while self.queue:
                 message = self.queue.pop(0)
                 if isinstance(message, ports.Event):
@@ -48,24 +72,8 @@ class MessageBus(IMessageBus, IInbox, IOutbox):
                     self._handle_command(message)
                 else:
                     raise Exception(f"{message!r} was not an Event or Command")
-
             self.uow.commit()
-            # return first event from the initially issued command
-            # could also return all of them?
-            return next(iter(self.responses), None)
-
-    # TODO - create a nicer set of interfaces that handles transaction
-    #  management transparently. Note: see UOW.is_active()
-
-    def invoke(self, command: Command):
-        # Injected into each policy to publish commands onto the message
-        # bus without starting a new unit of work
-        self.queue.append(command)
-
-    def publish(self, event: Event):
-        # Injected into each use case to publish events onto the message
-        # bus without starting a new unit of work
-        self.queue.append(event)
+            return self.responses
 
     def _handle_command(self, command: ports.Command):
         logger.debug(f"handling command: {command!r}")

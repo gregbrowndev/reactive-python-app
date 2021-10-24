@@ -9,17 +9,23 @@ class FakeUnitOfWork(IUnitOfWork):
     def __init__(self):
         # TODO - remove session once core dependency is removed
         self.session = mock.create_autospec(Session, instance=True)
-        self.did_commit = False
-        self.did_rollback = False
+        self._did_commit = False
+        self._did_rollback = False
+        self._is_active = False
 
     def __enter__(self):
-        pass
+        self._is_active = True
 
     def __exit__(self, *args):
-        pass
+        self.rollback()
+
+    def is_active(self) -> bool:
+        return self._is_active
 
     def commit(self):
-        self.did_commit = True
+        self._did_commit = True
+        self._is_active = False
 
     def rollback(self):
-        self.did_rollback = True
+        self._did_rollback = True
+        self._is_active = False

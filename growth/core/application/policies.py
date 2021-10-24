@@ -1,11 +1,12 @@
 import uuid
 
 from growth.core.application import commands, events
+from growth.core.application.ports import IInbox
 from growth.core.domain import types
 
 
 def handle_market_growth_margin_changed(
-    session, event: events.MarketGrowthMarginChanged
+    session, inbox: IInbox, event: events.MarketGrowthMarginChanged
 ):
     command = commands.ChangeMarketVariableRate(
         market=event.market,
@@ -16,7 +17,7 @@ def handle_market_growth_margin_changed(
 
 
 def handle_market_wholesale_cost_changed(
-    session, event: events.MarketWholesaleCostChanged
+    session, inbox: IInbox, event: events.MarketWholesaleCostChanged
 ):
     command = commands.ChangeMarketVariableRate(
         market=event.market,
@@ -27,7 +28,7 @@ def handle_market_wholesale_cost_changed(
 
 
 def handle_market_variable_rate_changed(
-    session, event: events.MarketVariableRateChanged
+    session, inbox: IInbox, event: events.MarketVariableRateChanged
 ):
     # Fetch IDs of tariffs in market. Note, this should be its own command
     tariff_ids = [types.TariffId(uuid.uuid4())]
@@ -42,12 +43,14 @@ def handle_market_variable_rate_changed(
 
 
 def handle_tariff_market_variable_rate_changed(
-    session, event: events.TariffMarketVariableRateChanged
+    session, inbox: IInbox, event: events.TariffMarketVariableRateChanged
 ):
     command = commands.CalculateIncumbentRates(market=event.market)
     # dispatch command
 
 
-def handle_incumbent_rates_calculated(session, event: events.IncumbentRatesCalculated):
+def handle_incumbent_rates_calculated(
+    session, inbox: IInbox, event: events.IncumbentRatesCalculated
+):
     command = commands.CalculateSavings(market=event.market)
     # dispatch command

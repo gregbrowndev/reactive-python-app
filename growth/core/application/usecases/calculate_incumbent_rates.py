@@ -1,9 +1,12 @@
 import time
 
+from sqlalchemy.orm import Session
+
 from growth.core.application import commands, events
+from growth.core.application.ports import IOutbox
 
 
-def handle(session, cmd: commands.CalculateIncumbentRates):
+def handle(session: Session, outbox: IOutbox, cmd: commands.CalculateIncumbentRates):
     """
     Use case: Calculate Incumbent Rates
     Steps:
@@ -13,3 +16,4 @@ def handle(session, cmd: commands.CalculateIncumbentRates):
     """
     time.sleep(2)
     event = events.IncumbentRatesCalculated(market=cmd.market)
+    outbox.publish(event)

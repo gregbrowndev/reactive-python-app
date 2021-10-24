@@ -1,26 +1,24 @@
-import abc
 import typing
 
-from pydantic import BaseModel
-
-
-class Event(BaseModel, abc.ABC):
-    ...
-
-
-class Command(BaseModel, abc.ABC):
-    ...
-
+from growth.core.application.commands import *
+from growth.core.application.events import *
 
 Message = typing.Union[
     Command,
     Event,
 ]
 
-Session = typing.NewType("Session", dict)
 
-C = typing.TypeVar("C", bound=Command)
-E = typing.TypeVar("E", bound=Event)
+class IMessageBus(typing.Protocol):
+    def issue(self, command: Command):
+        ...
 
-CommandHandler = typing.Callable[[Session, C], None]
-EventHandler = typing.Callable[[Session, E], None]
+
+class IInbox(typing.Protocol):
+    def invoke(self, command: Command):
+        ...
+
+
+class IOutbox(typing.Protocol):
+    def publish(self, event: Event):
+        ...

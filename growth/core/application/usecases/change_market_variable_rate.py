@@ -1,9 +1,12 @@
 import time
 
+from sqlalchemy.orm import Session
+
 from growth.core.application import commands, events
+from growth.core.application.ports import IOutbox
 
 
-def handle(session, cmd: commands.ChangeMarketVariableRate):
+def handle(session: Session, outbox: IOutbox, cmd: commands.ChangeMarketVariableRate):
     """
     Use case: Change market variable rate
     Steps:
@@ -17,3 +20,4 @@ def handle(session, cmd: commands.ChangeMarketVariableRate):
         region_code=cmd.region_code,
         price_per_unit=cmd.price_per_unit,
     )
+    outbox.publish(event)

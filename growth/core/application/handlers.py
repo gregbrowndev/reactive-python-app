@@ -1,7 +1,12 @@
-import typing
-
-from growth.core.application import commands
-from growth.core.application.ports import Command, CommandHandler, Event, EventHandler
+from growth.core.application import commands, events
+from growth.core.application.message_bus import CommandHandlerMap, EventHandlerMap
+from growth.core.application.policies import (
+    handle_incumbent_rates_calculated,
+    handle_market_growth_margin_changed,
+    handle_market_variable_rate_changed,
+    handle_market_wholesale_cost_changed,
+    handle_tariff_market_variable_rate_changed,
+)
 from growth.core.application.usecases import (
     calculate_incumbent_rates,
     calculate_savings,
@@ -11,14 +16,6 @@ from growth.core.application.usecases import (
     change_tariff_market_variable_rate,
 )
 
-C = typing.TypeVar("C", bound=Command)
-E = typing.TypeVar("E", bound=Event)
-
-CommandHandlerMap = typing.Dict[typing.Type[C], CommandHandler[C]]
-EventHandlerMap = typing.Dict[typing.Type[E], EventHandler[E]]
-
-EVENT_HANDLERS: EventHandlerMap = {}
-
 COMMAND_HANDLERS: CommandHandlerMap = {
     commands.ChangeMarketGrowthMargin: change_growth_margin.handle,
     commands.ChangeMarketWholesaleCost: change_market_wholesale_cost.handle,
@@ -26,4 +23,15 @@ COMMAND_HANDLERS: CommandHandlerMap = {
     commands.ChangeTariffMarketVariableRate: change_tariff_market_variable_rate.handle,
     commands.CalculateIncumbentRates: calculate_incumbent_rates.handle,
     commands.CalculateSavings: calculate_savings.handle,
+}
+
+EVENT_HANDLERS: EventHandlerMap = {
+    events.MarketGrowthMarginChanged: [handle_market_growth_margin_changed],
+    events.MarketWholesaleCostChanged: [handle_market_wholesale_cost_changed],
+    events.MarketVariableRateChanged: [handle_market_variable_rate_changed],
+    events.TariffMarketVariableRateChanged: [
+        handle_tariff_market_variable_rate_changed
+    ],
+    events.IncumbentRatesCalculated: [handle_incumbent_rates_calculated],
+    events.SavingsCalculated: [],
 }

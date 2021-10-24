@@ -1,7 +1,14 @@
+import abc
 import decimal
+import typing
 
-from growth.core.application.ports import Event
+from pydantic import BaseModel
+
 from growth.core.domain import types
+
+
+class Event(BaseModel, abc.ABC):
+    ...
 
 
 class MarketGrowthMarginChanged(Event):

@@ -1,7 +1,13 @@
+import abc
 import decimal
 
-from growth.core.application.ports import Command
+from pydantic import BaseModel
+
 from growth.core.domain import types
+
+
+class Command(BaseModel, abc.ABC):
+    ...
 
 
 class ChangeMarketGrowthMargin(Command):

@@ -55,7 +55,7 @@ class MessageBus(IMessageBus, IInbox, IOutbox):
             return next(iter(self.responses), None)
 
     # TODO - create a nicer set of interfaces that handles transaction
-    #  management transparently
+    #  management transparently. Note: see UOW.is_active()
 
     def invoke(self, command: Command):
         # Injected into each policy to publish commands onto the message

@@ -19,6 +19,9 @@ class UnitOfWork(IUnitOfWork):
         super().__exit__(*args)
         self.session.close()
 
+    def is_active(self) -> bool:
+        return self.session is not None and self.session.in_transaction()
+
     def commit(self):
         self.session.commit()
 

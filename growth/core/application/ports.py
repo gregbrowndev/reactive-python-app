@@ -38,6 +38,9 @@ class IUnitOfWork(Protocol):
     def __exit__(self, *args):
         ...
 
+    def is_active(self) -> bool:
+        ...
+
     def commit(self):
         ...
 

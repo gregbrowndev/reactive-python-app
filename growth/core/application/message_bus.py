@@ -31,23 +31,25 @@ class MessageBus(IMessageBus, IInbox, IOutbox):
     command_handlers: CommandHandlerMap
 
     @validate_arguments
-    def issue(self, command: ports.Command) -> ports.Event:
-        self.queue: typing.List[ports.Message] = [command]
-        self.responses: typing.List[ports.Event] = []
+    def issue(self, command: ports.Command) -> typing.Optional[ports.Event]:
+        with self.uow:
+            self.queue: typing.List[ports.Message] = [command]
+            self.responses: typing.List[ports.Event] = []
 
-        # TODO
-        #  - add session transaction management
+            while self.queue:
+                message = self.queue.pop(0)
+                if isinstance(message, ports.Event):
+                    self._handle_event(message)
+                    self.responses.append(message)
+                elif isinstance(message, ports.Command):
+                    self._handle_command(message)
+                else:
+                    raise Exception(f"{message!r} was not an Event or Command")
 
-        while self.queue:
-            message = self.queue.pop(0)
-            if isinstance(message, ports.Event):
-                self._handle_event(message)
-                self.responses.append(message)
-            elif isinstance(message, ports.Command):
-                self._handle_command(message)
-            else:
-                raise Exception(f"{message!r} was not an Event or Command")
-        return self.responses[0]
+            self.uow.commit()
+            # return first event from the initially issued command
+            # could also return all of them?
+            return next(iter(self.responses), None)
 
     # TODO - create a nicer set of interfaces that handles transaction
     #  management transparently

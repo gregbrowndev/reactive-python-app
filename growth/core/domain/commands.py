@@ -12,19 +12,16 @@ class Command(BaseModel, abc.ABC):
 
 class ChangeMarketGrowthMargin(Command):
     market: types.Market
-    region_code: str
-    margin: decimal.Decimal
+    margin: types.Rate
 
 
 class ChangeMarketWholesaleCost(Command):
     market: types.Market
-    region_code: str
     price_per_unit: types.Rate
 
 
 class ChangeMarketVariableRate(Command):
     market: types.Market
-    region_code: str
     price_per_unit: types.Rate
 
 

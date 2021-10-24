@@ -12,19 +12,16 @@ class Event(BaseModel, abc.ABC):
 
 class MarketGrowthMarginChanged(Event):
     market: types.Market
-    region_code: str
-    margin: decimal.Decimal
+    margin: types.Rate
 
 
 class MarketWholesaleCostChanged(Event):
     market: types.Market
-    region_code: str
     price_per_unit: types.Rate
 
 
 class MarketVariableRateChanged(Event):
     market: types.Market
-    region_code: str
     price_per_unit: types.Rate
 
 

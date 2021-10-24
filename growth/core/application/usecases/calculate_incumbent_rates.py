@@ -1,9 +1,8 @@
-import time
-
 from sqlalchemy.orm import Session
 
 from growth.core.application.ports import IOutbox
 from growth.core.domain import commands, events
+from growth.core.domain.functions import do_some_work
 
 
 def handle(session: Session, outbox: IOutbox, cmd: commands.CalculateIncumbentRates):
@@ -14,6 +13,6 @@ def handle(session: Session, outbox: IOutbox, cmd: commands.CalculateIncumbentRa
     - change growth margin
     - publish event
     """
-    time.sleep(2)
+    do_some_work()
     event = events.IncumbentRatesCalculated(market=cmd.market)
     outbox.publish(event)

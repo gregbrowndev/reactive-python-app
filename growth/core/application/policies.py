@@ -11,7 +11,6 @@ def handle_market_growth_margin_changed(
 ):
     command = commands.ChangeMarketVariableRate(
         market=event.market,
-        region_code=event.region_code,
         price_per_unit=event.margin,  # doesn't really make sense
     )
     inbox.invoke(command)
@@ -22,7 +21,6 @@ def handle_market_wholesale_cost_changed(
 ):
     command = commands.ChangeMarketVariableRate(
         market=event.market,
-        region_code=event.region_code,
         price_per_unit=event.price_per_unit,  # doesn't really make sense
     )
     inbox.invoke(command)

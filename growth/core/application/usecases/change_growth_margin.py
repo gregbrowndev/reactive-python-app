@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 from growth.core.application.ports import IOutbox
 from growth.core.domain import commands, events
+from growth.core.domain.functions import do_some_work
 
 
 def handle(session: Session, outbox: IOutbox, cmd: commands.ChangeMarketGrowthMargin):
@@ -14,8 +15,6 @@ def handle(session: Session, outbox: IOutbox, cmd: commands.ChangeMarketGrowthMa
     - change growth margin
     - publish event
     """
-    time.sleep(2)
-    event = events.MarketGrowthMarginChanged(
-        market=cmd.market, region_code=cmd.region_code, margin=cmd.margin
-    )
+    do_some_work()
+    event = events.MarketGrowthMarginChanged(market=cmd.market, margin=cmd.margin)
     outbox.publish(event)

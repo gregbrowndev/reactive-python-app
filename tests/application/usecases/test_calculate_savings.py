@@ -2,12 +2,12 @@ from growth.core.domain import commands, events, types
 
 
 def test_happy_path(bus):
-    """Scenario 1: Incumbent rates are calculated"""
+    """Scenario 1: Savings are calculated"""
     # GIVEN
     # some preconditions...
 
     # WHEN
-    command = commands.CalculateIncumbentRates(
+    command = commands.CalculateSavings(
         market=types.Market(
             territory=types.Territory.FR,
             region_code=None,
@@ -18,5 +18,5 @@ def test_happy_path(bus):
     resp = bus.issue(command)
 
     # Then
-    assert isinstance(resp, events.IncumbentRatesCalculated)
-    assert resp == events.IncumbentRatesCalculated(market=command.market)
+    assert isinstance(resp, events.SavingsCalculated)
+    assert resp == events.SavingsCalculated(market=command.market)

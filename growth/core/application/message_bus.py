@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 
 from growth.core.application import ports
 from growth.core.application.ports import Command, Event, IInbox, IMessageBus, IOutbox
+from growth.core.application.unit_of_work import IUnitOfWork, UnitOfWork
 
 C = typing.TypeVar("C", bound=Command)
 CommandHandler = typing.Callable[[Session, IOutbox, C], None]
@@ -22,7 +23,10 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class MessageBus(IMessageBus, IInbox, IOutbox):
-    session: Session
+    uow: UnitOfWork
+    # Constraint: uow should be IUnitOfWork, so we can stub with FakeUnitOfWork
+    # However, use cases need SqlAlchemy session - would need DI of adapters
+
     event_handlers: EventHandlerMap
     command_handlers: CommandHandlerMap
 
@@ -54,7 +58,7 @@ class MessageBus(IMessageBus, IInbox, IOutbox):
         self.queue.append(command)
 
     def publish(self, event: Event):
-        # Injected into each use case to publish event onto the message
+        # Injected into each use case to publish events onto the message
         # bus without starting a new unit of work
         self.queue.append(event)
 
@@ -63,7 +67,7 @@ class MessageBus(IMessageBus, IInbox, IOutbox):
         try:
             # TODO - add tenacity retry
             handler = self.command_handlers[type(command)]
-            handler(self.session, self, command)
+            handler(self.uow.session, self, command)
         except Exception:
             logger.exception(f"Exception handling command: {command!r}")
             raise
@@ -72,7 +76,7 @@ class MessageBus(IMessageBus, IInbox, IOutbox):
         for handler in self.event_handlers[type(event)]:
             try:
                 logger.debug(f"handling event {event!r} with handler {handler!r}")
-                handler(self.session, self, event)
+                handler(self.uow.session, self, event)
             except Exception:
                 logger.exception(f"Exception handling event: {event:!r}")
                 continue

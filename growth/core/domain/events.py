@@ -1,6 +1,5 @@
 import abc
 import decimal
-import typing
 
 from pydantic import BaseModel
 

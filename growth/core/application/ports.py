@@ -1,7 +1,7 @@
 import typing
 
-from growth.core.application.commands import *
-from growth.core.application.events import *
+from growth.core.domain.commands import Command
+from growth.core.domain.events import Event
 
 Message = typing.Union[
     Command,

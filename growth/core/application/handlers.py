@@ -1,4 +1,3 @@
-from growth.core.application import commands, events
 from growth.core.application.message_bus import CommandHandlerMap, EventHandlerMap
 from growth.core.application.policies import (
     handle_incumbent_rates_calculated,
@@ -15,6 +14,7 @@ from growth.core.application.usecases import (
     change_market_wholesale_cost,
     change_tariff_market_variable_rate,
 )
+from growth.core.domain import commands, events
 
 COMMAND_HANDLERS: CommandHandlerMap = {
     commands.ChangeMarketGrowthMargin: change_growth_margin.handle,

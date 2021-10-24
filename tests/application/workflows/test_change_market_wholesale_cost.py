@@ -7,7 +7,7 @@ from growth.core.domain import commands, events, types
 
 
 def test_happy_path(bus_reactive: IMessageBus):
-    """Scenario 1: Growth margin is changed"""
+    """Scenario 1: Market wholesale cost is changed"""
     # GIVEN
     # some preconditions...
 

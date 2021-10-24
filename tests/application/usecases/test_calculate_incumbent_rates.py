@@ -1,9 +1,7 @@
-from growth.core.application import commands
-from growth.core.application.handlers import COMMAND_HANDLERS
-from growth.core.domain import types
+from growth.core.domain import commands, events, types
 
 
-def test_happy_path(mocker):
+def test_happy_path(bus):
     """Scenario 1: Incumbent rates are calculated"""
     # WHEN
     command = commands.CalculateIncumbentRates(
@@ -14,8 +12,8 @@ def test_happy_path(mocker):
             market_type=types.MarketType.RESIDENTIAL,
         )
     )
+    resp = bus.issue(command)
 
-    command_handler = COMMAND_HANDLERS[command.__class__]
-    command_handler(mocker.Mock(), command)
-
-    # TODO - test event is published
+    # Then
+    assert isinstance(resp, events.IncumbentRatesCalculated)
+    assert resp == events.IncumbentRatesCalculated(market=command.market)

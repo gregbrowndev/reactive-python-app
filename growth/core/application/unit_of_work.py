@@ -1,28 +1,11 @@
-from typing import Protocol
-
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import sessionmaker
 
+from growth.core.application.ports import IUnitOfWork
 from growth.settings import Settings
 
 
-class IUnitOfWork(Protocol):
-    def __enter__(self) -> "IUnitOfWork":
-        ...
-
-    def __exit__(self, *args):
-        ...
-
-    def commit(self):
-        ...
-
-    def rollback(self):
-        ...
-
-
 class UnitOfWork(IUnitOfWork):
-    session: Session
-
     def __init__(self, settings: Settings, session_factory=None):
         if session_factory is None:
             session_factory = sessionmaker(bind=create_engine(settings.DATABASE_URL))

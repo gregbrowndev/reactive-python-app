@@ -6,8 +6,14 @@ from pydantic import validate_arguments
 from sqlalchemy.orm import Session
 
 from growth.core.application import ports
-from growth.core.application.ports import Command, Event, IInbox, IMessageBus, IOutbox
-from growth.core.application.unit_of_work import IUnitOfWork, UnitOfWork
+from growth.core.application.ports import (
+    Command,
+    Event,
+    IInbox,
+    IMessageBus,
+    IOutbox,
+    IUnitOfWork,
+)
 
 C = typing.TypeVar("C", bound=Command)
 CommandHandler = typing.Callable[[Session, IOutbox, C], None]
@@ -23,10 +29,7 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class MessageBus(IMessageBus, IInbox, IOutbox):
-    uow: UnitOfWork
-    # Constraint: uow should be IUnitOfWork, so we can stub with FakeUnitOfWork
-    # However, use cases need SqlAlchemy session - would need DI of adapters
-
+    uow: IUnitOfWork
     event_handlers: EventHandlerMap
     command_handlers: CommandHandlerMap
 

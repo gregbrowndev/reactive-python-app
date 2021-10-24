@@ -1,5 +1,3 @@
-import time
-
 from sqlalchemy.orm import Session
 
 from growth.core.application.ports import IOutbox

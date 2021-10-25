@@ -5,6 +5,8 @@ from sqlalchemy.orm import Session
 from growth.core.application.ports import IInbox
 from growth.core.domain import commands, events, types
 
+# TODO - could build Saga read model to track process state
+
 
 def handle_market_growth_margin_changed(
     session: Session, inbox: IInbox, event: events.MarketGrowthMarginChanged

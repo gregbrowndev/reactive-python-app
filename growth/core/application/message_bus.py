@@ -76,9 +76,10 @@ class MessageBus(IMessageBus, IInbox, IOutbox):
             return self.responses
 
     def _handle_command(self, command: ports.Command):
-        logger.debug(f"handling command: {command!r}")
         try:
+            logger.debug(f"handling command: {command!r}")
             # TODO - add tenacity retry
+            # TODO - add transactional inbox
             handler = self.command_handlers[type(command)]
             handler(self.uow.session, self, command)
         except Exception:
@@ -89,6 +90,7 @@ class MessageBus(IMessageBus, IInbox, IOutbox):
         for handler in self.event_handlers[type(event)]:
             try:
                 logger.debug(f"handling event {event!r} with handler {handler!r}")
+                # TODO - add transaction outbox
                 handler(self.uow.session, self, event)
             except Exception:
                 logger.exception(f"Exception handling event: {event:!r}")

@@ -1,5 +1,20 @@
 # Reactive Core Application Design Prototype
 
+## Overview
+
+This is a prototype application based on Hexagonal architecture with
+a reactive, event-driven core. The application demonstrates how a
+domain-oriented microservice can utilise domain events to drive internal
+workflows within the service.
+
+The application aligns with a sales/growth domain whose function it is
+to compute and broadcast changes to product pricing based on the market
+variable rate of energy usage. The process model below not production-ready
+and is simply intended for educational purposes:
+
+![Simple Price Change Model](./docs/simple_price_change_model.jpg)
+
+
 ## Development
 
 Recommended tooling:

@@ -1,0 +1,25 @@
+type Tariff {
+    tariffId: Int!
+    standardVariableRate: Float!
+}
+
+type AdjustStandardVariableRatePayload {
+    status: Boolean!
+    errors: [String!]
+}
+
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+type Query {
+    tariffs: [Tariff]!
+    tariff(tariffId: Int!): Tariff
+}
+
+type Mutation {
+     adjustStandardVariableRate(
+         tariffId: Int!, standardVariableRate: Float!
+     ): AdjustStandardVariableRatePayload!
+}

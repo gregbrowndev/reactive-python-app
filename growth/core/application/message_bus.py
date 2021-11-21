@@ -43,7 +43,7 @@ class MessageBus(IMessageBus, IInbox, IOutbox):
 
     @validate_arguments
     def invoke(self, command: Command) -> typing.Optional[typing.List[ports.Event]]:
-        # TODO - need to have separate interfaces for shell/core
+        # TODO - would be nice to have separate interfaces for shell/core
         # Injected into each policy to publish commands onto the message
         # bus without starting a new unit of work
         if not self.uow.is_active():
@@ -59,7 +59,7 @@ class MessageBus(IMessageBus, IInbox, IOutbox):
             return self._start(event)
         self.queue.append(event)
 
-    def _start(self, message: ports.Message):
+    def _start(self, message: ports.Message) -> typing.List[ports.Event]:
         with self.uow:
             self.queue: typing.List[ports.Message] = [message]
             self.responses: typing.List[ports.Event] = []

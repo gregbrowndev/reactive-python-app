@@ -1,0 +1,9 @@
+type Tariff {
+    tariffId: Int!
+    standardVariableRate: Float!
+}
+
+type Query {
+    tariffs: [Tariff]!
+    tariff(tariffId: Int!): Tariff
+}

@@ -1,0 +1,10 @@
+type AdjustStandardVariableRatePayload {
+    status: Boolean!
+    errors: [String!]
+}
+
+type Mutation {
+     adjustStandardVariableRate(
+         tariffId: Int!, standardVariableRate: Float!
+     ): AdjustStandardVariableRatePayload!
+}

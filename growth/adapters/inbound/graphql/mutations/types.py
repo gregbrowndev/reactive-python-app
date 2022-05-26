@@ -3,6 +3,7 @@ from typing import Any
 
 from ariadne import ObjectType, convert_kwargs_to_snake_case
 from graphql import GraphQLResolveInfo
+from starlette.datastructures import UploadFile
 
 from growth.adapters.inbound.graphql import model
 
@@ -24,3 +25,16 @@ async def resolve_adjust_standard_variable_rate(
 
     except Exception as error:
         return {"status": False, "errors": [str(error)]}
+
+
+@mutation.field("uploadElectricityFactsLabel")
+@convert_kwargs_to_snake_case
+async def resolve_upload_electricity_facts_label(
+    obj: Any, info: GraphQLResolveInfo, electricity_facts_label_file: UploadFile,
+):
+    print(f"Received request to upload EFL!")
+    print(electricity_facts_label_file)
+    contents = await electricity_facts_label_file.read()
+    print(contents)
+
+    return True

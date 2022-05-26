@@ -1,4 +1,60 @@
+scalar Upload
+
 schema {
     query: Query
     mutation: Mutation
+}
+
+input PriceChangeFranceData {
+    ratesCsv: Upload!
+    tcfeCsv: Upload!
+    abonnementCtaCsv: Upload!
+}
+
+input PriceChangeTexasData {
+    tariffCsv: Upload!
+}
+
+input PriceChangeSpainData {
+    ratesCsv: Upload!
+    powerCapacityChargesCsv: Upload!
+    powerCapacityRatesCsv: Upload!
+    taxesCsv: Upload!
+}
+
+union PriceChangeData = PriceChangeFranceData | PriceChangeTexasData | PriceChangeSpainData
+
+
+input DraftPriceChangeInput {
+    effectiveDate: DateTime!
+    effectiveDateExistingMembers: DateTime
+    description: String
+    territoryData: PriceChangeData
+}
+
+type DraftPriceChangePayload {
+    status: Boolean!
+    errors: [String!]
+}
+
+
+input PublishPriceChangeInput {
+    priceChangeId: ID!
+}
+
+type PublishPriceChangePayload {
+    status: Boolean!
+    errors: [String!]
+}
+
+
+
+type Mutation {
+     draftPriceChange(
+         draftPriceChangeInput: DraftPriceChangeInput!
+     ): DraftPriceChangePayload!
+
+    publishPriceChange(
+        publishPriceChangeInput: PublishPriceChangeInput!
+    ): PublishPriceChangePayload
 }

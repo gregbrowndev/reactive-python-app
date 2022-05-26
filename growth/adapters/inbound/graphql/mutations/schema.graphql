@@ -7,4 +7,6 @@ type Mutation {
      adjustStandardVariableRate(
          tariffId: Int!, standardVariableRate: Float!
      ): AdjustStandardVariableRatePayload!
+
+    uploadElectricityFactsLabel(electricityFactsLabelFile: Upload!): Boolean!
 }

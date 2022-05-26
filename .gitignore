@@ -42,3 +42,4 @@ test-results
 test_config_*.json
 unittests.cfg
 venv
+site/
